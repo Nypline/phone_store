@@ -1,17 +1,17 @@
 import express from "express";
 import {
+  createProductHandler,
+  deleteProductHandler,
   getAllProductHandler,
   getProductByIdHandler,
-  addProductHandler,
   updateProductHandler,
-  deleteProductHandler,
-} from "../handlers/productHandler.js";
+} from "../controllers/productController.js";
 
 const productRouter = express.Router();
 
 productRouter.get("/products", getAllProductHandler);
 productRouter.get("/products/:id", getProductByIdHandler);
-productRouter.post("/products", addProductHandler);
+productRouter.post("/products", createProductHandler);
 productRouter.put("/products/:id", updateProductHandler);
 productRouter.delete("/products/:id", deleteProductHandler);
 
