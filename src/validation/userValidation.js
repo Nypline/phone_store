@@ -20,6 +20,7 @@ export const updateUserSchema = z.object({
     .optional(),
   email: z.email("email tidak valid").optional(),
   password: z.string().min(6, "password minimal 6 karakter").optional(),
+  confirmPassword: z.string().min(6, "confirm password minimal 6 karakter"),
   role: z
     .enum(["admin", "user"], {
       message: "role harus 'admin' atau 'user'",

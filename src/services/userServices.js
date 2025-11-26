@@ -5,6 +5,7 @@ import {
   updateUserSchema,
 } from "../validation/userValidation.js";
 import validate from "../validation/validates.js";
+import brycrypt from "bcrypt";
 
 export const getAllUsers = async () => {
   const [users] = await pool.query(
@@ -27,13 +28,12 @@ export const getUserById = async (id) => {
 export const createUser = async (request) => {
   const validated = validate(createUserSchema, request);
   const { fullname, username, email, password, role } = validated;
+  const hashedPassword = await brycrypt.hash(password, 10);
 
   const [result] = await pool.query(
     "INSERT INTO users (fullname, username, email, password, role) VALUES (?, ?, ?, ?, ?)",
-    [fullname, username, email, password, role]
+    [fullname, username, email, hashedPassword, role]
   );
-
-  console.log("Validated Data:", JSON.stringify(validated));
 
   return {
     id: result.insertId,
@@ -46,11 +46,12 @@ export const createUser = async (request) => {
 
 export const updateUser = async (id, request) => {
   const validated = validate(updateUserSchema, request);
-  const { fullname, username, email, adress, phone_number, age } = validated;
-
+  const { fullname, username, email, password, adress, phone_number, age } =
+    validated;
+  const hashedPassword = await brycrypt.hash(password, 10);
   const [result] = await pool.query(
-    "UPDATE users SET fullname = ?, username = ?, email = ?, adress = ?, phone_number = ?, age = ? WHERE id = ?",
-    [fullname, username, email, adress, phone_number, age, id]
+    "UPDATE users SET fullname = ?, username = ?, email = ?,password = ?, adress = ?, phone_number = ?, age = ? WHERE id = ?",
+    [fullname, username, email, hashedPassword, adress, phone_number, age, id]
   );
 
   return result;
